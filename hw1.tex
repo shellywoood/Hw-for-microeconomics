@@ -1,0 +1,174 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{indentfirst}
+\usepackage{ctex,CJK}
+\usepackage{graphicx}
+\usepackage{float}
+
+%%%%%===== 设置页面边距
+\usepackage[left=2.54cm,right=2.54cm,top=3.0cm,bottom=3.0cm]{geometry}
+
+\setlength{\parskip}{0.5\baselineskip}
+\setlength{\parindent}{2em}
+\renewcommand{\baselinestretch}{1.2}
+
+% Over-full v-boxes are due to the \v{c} in author's name
+\vfuzz2pt % Don't report small over-full v-boxes
+
+% THEOREM Environments --------------------------------------------------------
+\newtheorem{thm}{Theorem}[subsection]
+\newtheorem{cor}[thm]{Corollary}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{prop}[thm]{Proposition}
+\theoremstyle{definition}
+\newtheorem{defn}[thm]{Definition}
+\theoremstyle{remark}
+\newtheorem{rem}[thm]{Remark}
+\numberwithin{equation}{subsection}
+% MATH ------------------------------------------------------------------------
+\DeclareMathOperator{\RE}{Re}
+\DeclareMathOperator{\IM}{Im}
+\DeclareMathOperator{\ess}{ess}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\To}{\longrightarrow}
+\newcommand{\h}{\mathcal{H}}
+\newcommand{\s}{\mathcal{S}}
+\newcommand{\A}{\mathcal{A}}
+\newcommand{\J}{\mathcal{J}}
+\newcommand{\M}{\mathcal{M}}
+\newcommand{\W}{\mathcal{W}}
+\newcommand{\X}{\mathcal{X}}
+\newcommand{\BOP}{\mathbf{B}}
+\newcommand{\BH}{\mathbf{B}(\mathcal{H})}
+\newcommand{\KH}{\mathcal{K}(\mathcal{H})}
+\newcommand{\Real}{\mathbb{R}}
+\newcommand{\Complex}{\mathbb{C}}
+\newcommand{\Field}{\mathbb{F}}
+\newcommand{\RPlus}{\Real^{+}}
+\newcommand{\Polar}{\mathcal{P}_{\s}}
+\newcommand{\Poly}{\mathcal{P}(E)}
+\newcommand{\EssD}{\mathcal{D}}
+\newcommand{\Lom}{\mathcal{L}}
+\newcommand{\States}{\mathcal{T}}
+\newcommand{\abs}[1]{\left\vert#1\right\vert}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\seq}[1]{\left<#1\right>}
+\newcommand{\norm}[1]{\left\Vert#1\right\Vert}
+\newcommand{\essnorm}[1]{\norm{#1}_{\ess}}
+\newcommand{\upcite}[1]{\textsuperscript{\textsuperscript{\cite{#1}}}}
+
+\DeclareMathOperator*{\argmax}{argmax}
+
+\begin{document}
+
+\title{\bf Bayes Classifier}
+
+\author{Penghuan Huang\v{c}\thanks{Department of Economy, Xiamen University. Email: 1131936012@qq.com}}
+\date{Oct 27,2019}
+
+\maketitle
+\begin{abstract}
+  Since Bayes classifier plays an important role in many areas of data science like learning $p(y|x)$, in this short article I try to give a brief introduction to Bayes classifier concerning its four categories, theory and its correction in real study. Though in all the four classifiers the Naive Bayes will be the main focus.
+\end{abstract}
+
+\section*{Definition}
+The Bayes clssifier is:
+\begin{equation*}
+C^{Bayes}(x)=\mathop{\argmax}_{r\in\{1,2,\dots,n\}} P(Y=r|X=x)
+\end{equation*}
+
+r refers to the possible values of Y, ranging from 1 to K. It means that there are N classes. This function gives out the best value of Y, namely r, which maximizes the conditional probability of Y equal to r condition on the observed x, thus classifies the point x to the class C(x). In other words, Bayes classifier gives out the most likely value of r knowing x.
+
+\section*{Fundamental Knowledge}
+The thoughts and calculation of Bayes classifier is based on Bayesian theorem. The theorem can be stated in the following equation:
+\begin{equation*}
+P(r|x)=\frac{P(r)P(x|r)}{P(x)}=\frac{P(x,r)}{P(x)}
+\end{equation*}
+
+P(x) can be calculated as following:
+\begin{equation*}
+P(x)=P(r_1)P(x|r_1)+\dots+P(r_n)P(x|r_n)
+\end{equation*}
+
+\section*{Categories}
+Bayes classifier has four main categories---Naive Bayes, TAN, BAN, and GBN.
+
+{\bf Naive Bayes}\upcite{3}: In machine learning, Npaive Bayes classifiers are a family of simple "probabilistic classifiers" based on applying Bayes' theorem with strong independence assumptions between the features. This strong assumption is the reason why we call it 'naive`, which can be expressed in the mathematical form:
+\begin{equation*}
+P(r|x)=\frac{P(r)P(x|r)}{P(x)}=\frac{P(r)}{P(x)}\prod_{i=1}^n P(x_1|r)
+\label{equ1}
+\end{equation*}
+
+Though this classification method is widely used, there actually exists a problem in such a strong assumption, as we know features are often related with each other in real life. For example, when learning people's income, the two features---sex and height, are usually highly related.
+
+{\bf TAN}: Its full name is Tree Augmented Naive-Bayes, which is an extension of Naive Bayes since it allows dependency between features. But there is one restriction that each feature can only be a determinant of at most one other feature. TAN  schematic diagram is as follows, looking like a tree:
+\begin{figure}[h]
+     \centering
+     \includegraphics[width=0.45\textwidth]{TAN.PNG}
+     \caption{TAN model\protect\footnotemark}
+     \label{fig1}
+\end{figure}
+\footnotetext{The idea of such diagrams was generated from Deng and Fu's article\upcite{1}(2008).}
+
+Being pointed to by an arrow indicates being an determinant of the respective feature. ``r" is a class variable and ``$x_i$" are the features.
+
+{\bf BAN}: Its full name is BN Augmented Naive-Bayes. BAN further relax the strong assumption of independence, with no restriction on the mutual effect of features. It can be understood as follows:
+\begin{figure}[h]
+     \centering
+     \includegraphics[width=0.45\textwidth]{BAN.PNG}
+     \caption{BAN model}
+     \label{fig2}
+\end{figure}
+
+{\bf GBN}: GBN is the most free classifier out of the four. Its full name is General Bayesian Network. The ``r" point is treated the same as other ``x" points, which means no restriction on dependency of all the points. The following schematic diagram can help to understand:
+\begin{figure}[h]
+     \centering
+     \includegraphics[width=0.45\textwidth]{GBN.PNG}
+     \caption{GBN model}
+     \label{fig3}
+\end{figure}
+
+From experiment results from the reference\upcite{1}, we can conclude that Naive Bayes still performs well for small data sets even though its assumption seems unrealistic. Moreover, it is easy in calculation. Therefore, the Naive Bayes classifier is useful and widely adopted by researchers.
+
+\section*{Laplacian correction}
+There is another problem when using Naive Bayes that needs correction. When the data set is small and we use $\hat P(x_i|r)=\frac{|D_{r,x_i}|}{|D_r|}$ to calculate $\hat P(x_i|r)$, the extreme situation would likely appear:
+\begin{equation*}
+\exists i \in n,  \hat P(x_i|r)=0
+\end{equation*} 
+
+D is the data set. $|D_{r,x_i}|$ represents the number of samples that r and $x_i$ appear. $|D_r|$ is the number of samples exhibiting the character r.
+
+From the above calculation formula\ref{equ1} of Naive Bayes, $P(r|x)$ will always equal to zero if such an extreme situation appears, no matter how likely the other $x_i$ suggests r to appear. It is just like a saying, ``Tar with the same brush." 
+
+To prevent such an situation, Laplacian correction is needed. The correction can be concluded in the following two equations:
+\begin{equation*}
+\begin{cases}
+\hat P(x_i|r)=\frac{|D_{r,x_i}+1|}{|D_{r}+N_i|}
+\\
+\hat P(r)=\frac{|D_{r}+1|}{|D+N|}
+\end{cases}
+\end{equation*}
+
+$N_i$ is the number of possible classification ``r", while N is the number of possible values of the ith feature. For example, the possible values of sex is ``male" and ``female", thus $N_i$ should be counted as 2.
+
+\begin{thebibliography}{10}
+%-----------------------------------参考文献格式--------------------------------
+%其中书籍的表述方式为：
+%[编号] 作者，书名，出版地：出版社，出版年。
+%参考文献中期刊杂志论文的表述方式为：
+%[编号] 作者，论文名，杂志名，卷期号：起止页码，出版年。
+%参考文献中网上资源的表述方式为：
+%[编号] 作者，资源标题，网址，访问时间（年月日）。
+\bibitem{1} 邓甦,付长贺.四种贝叶斯分类器及其比较[J]. 沈阳师范大学学报(自然科学版),2008(01):31-33.
+\bibitem{2} 朴素贝叶斯分类器(Naive Bayesian Classifier)[EB/OL]. 网址：\\https://blog.csdn.net/qq\_32690999/article/details/78737393
+\bibitem{3} Wikipedia: https://en.wikipedia.org/wiki/Bayes\_classifier
+\bibitem{4} Wikipedia: https://en.wikipedia.org/wiki/Naive\_Bayes\_classifier
+%\bibitem{lf}M.R.C. van Dongen,\textbf{\LaTeX-and-Friends},下载地址如下\\
+%    \url{http://csweb.ucc.ie/~dongen/LaTeX-and-Friends.pdf}
+%\bibitem{figure}Keith Reckdahl,\textbf{Using Import graphics in \LaTeXe}, 1997\\
+%王磊翻译，\textbf{\LaTeXe 插图指南}，2000，下载地址如下\\
+%\url{http://math.ecnu.edu.cn/~latex/docs/Chs_doc/Graphics3.pdf}
+%\bibitem{HM}Addison Wesley，\textbf{Higher Mathematics}， 下载地址如下\\ \url{http://media.cism.it/attachments/ch8.pdf}
+\end{thebibliography}
+
+\end{document}
